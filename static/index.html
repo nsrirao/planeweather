@@ -1,97 +1,174 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Flight Details</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
     <meta charset="utf-8">
     <style>
       html, body, #map-canvas {
         height: 100%;
-        margin: 0px;
-        padding: 0px
+        margin: 10px;
+        padding: 10px
       }
 
     </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=geometry"></script>
-    <script>
-var poly;
-var geodesicPoly;
-var marker1;
-var marker2;
+</head>
 
-function initialize() {
-  var mapOptions = {
-    zoom: 4,
-    center: new google.maps.LatLng(34, -40.605)
-  };
+<body ng-app="myapp">
+    <div ng-controller="MyController" >
+        <form>
+            <select ng-model="myForm.sourceAP"
+                ng-options="obj.IATAFAA as obj.Name+', '+obj.City for obj in myData.fromServer">
+            </select> Origination Airport <br>
+            <select ng-model="myForm.destAP"
+                ng-options="obj.IATAFAA as obj.Name+', '+obj.City for obj in myData.fromServer">
+            </select> Destination Airport <br>
 
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
+            <input type="text" name="speed" ng-model="myForm.speed" ng-minlength=3 >Speed (km/hr) <br>
+            <input type="datetime-local" name="departure" ng-model="myForm.departure">Departure (Date and Time)<br>
+            <select ng-model="myForm.interval"> 
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>Interval (in Hours) <br>
+        </form>
+        <button ng-click="myData.doClick(item, $event)">Draw Flight Map</button>
+       
+    
+        <div>
+        {{myForm.sourceAP}} to {{myForm.destAP}}: Departing on {{myForm.departure}}<br>
+        Average speed of {{myForm.speed}} kms/hr. 
+        Updated every: {{myForm.interval}} hr
+        <br>
+        </div>
 
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(
-      document.getElementById('info'));
-
-
-  marker1 = new google.maps.Marker({
-    map: map,
-    draggable: true,
-    position: new google.maps.LatLng(40.71435280, -74.0059731)
-  });
-
-  marker2 = new google.maps.Marker({
-    map: map,
-    draggable: true,
-    position: new google.maps.LatLng(48.8566140, 2.35222190)
-  });
-
-  var bounds = new google.maps.LatLngBounds(marker1.getPosition(),
-      marker2.getPosition());
-  map.fitBounds(bounds);
-
-  google.maps.event.addListener(marker1, 'position_changed', update);
-  google.maps.event.addListener(marker2, 'position_changed', update);
-
-  var geodesicOptions = {
-    strokeColor: '#CC0099',
-    strokeOpacity: 1.0,
-    strokeWeight: 3,
-    geodesic: true,
-    map: map
-  };
-  geodesicPoly = new google.maps.Polyline(geodesicOptions);
-
-  update();
-}
-
-function update() {
-  var path = [marker1.getPosition(), marker2.getPosition()];
-  geodesicPoly.setPath(path);
-  var heading = google.maps.geometry.spherical.computeHeading(path[0],
-      path[1]);
-  document.getElementById('heading').value = heading;
-  document.getElementById('origin').value = path[0].toString();
-  document.getElementById('destination').value = path[1].toString();
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-
-    </script>
-  </head>
-  <body>
-    <form name="onlyform" action="/v1/flightdata" method="GET">
-    Origination Airport: <input type="text" name="sourceAP">
-    Destination Airport: <input type="text" name="destAP"> <br>
-    Departure time: <input type="datetime" name="departure"> <br>
-    Interval : <input type="text" name="interval"> <br>
-    Average Speed: <input type="text" name="speed"><br>
-    <input type="submit" name="submit">
-    </form>
-    <div id="map-canvas"></div>
-    <div id="panel" style="margin-left:-320px">
-      Origin: <input type="text" readonly id="origin">
-      Destination: <input type="text" readonly id="destination">
-      Heading: <input type="text" readonly id="heading"> degrees
     </div>
-  </body>
-</html>
+        <div id="map-canvas" height="100%" width="100%"></div>
 
+  <script>
+    angular.module("myapp", [])
+        .controller("MyController", function($scope, $http) {
+            $scope.myData = {};
+            $scope.myForm = {};
+            
+            // Default values of the form
+            $scope.myForm.sourceAP = 'RDU';
+            $scope.myForm.destAP = 'SFO';
+            $scope.myForm.speed = 200
+            $scope.myForm.interval = 2;
+            var d = new Date();
+            var n = d.getTime();
+            $scope.myForm.departure = d;
+            
+            //When the button is clicked get the weather data from the server
+            $scope.myData.doClick = function(item, event) {
+                var responsePromise = $http.get("http://localhost:8080/static/flightdata.json");
+                responsePromise.success(function(data, status, headers, config) {
+                    $scope.myData.flightpath = data;
+                    updatemap($scope);
+                });
+                responsePromise.error(function(data, status, headers, config) {
+                var message = "Data:"+data+":status"+status;
+                    console.log("AJAX failed!" + message);
+                });
+            }
+            
+            function initializemap($scope) {
+                var mapOptions = {
+                    zoom:5,
+                    center: new google.maps.LatLng(34, -84.605)
+                };
+
+              var map = new google.maps.Map(document.getElementById('map-canvas'),
+                  mapOptions);
+              var geodesicOptions = {
+                strokeColor: '#CC0099',
+                strokeOpacity: 1.0,
+                strokeWeight: 3,
+                geodesic: true,
+                map: map
+              };
+              var geodesicPoly = new google.maps.Polyline(geodesicOptions);
+              $scope.geodesicPoly = geodesicPoly;
+              $scope.map = map;
+            
+              map.controls[google.maps.ControlPosition.TOP_CENTER].push(
+                  document.getElementById('info'));
+
+            }
+            
+            function updatemap($scope) {
+                var map = $scope.map;
+                var datalength = $scope.myData.flightpath.length;
+                console.log("Flight data has elements:" + datalength);
+                for (var i=0; i< datalength; i++) {
+                    var mapinfo = $scope.myData.flightpath[i];
+                    if (mapinfo.gen !== undefined) {
+                        console.log(mapinfo.gen.numintervals);
+                        var marker1 = new google.maps.Marker({
+                            map: map,
+                            draggable: true,
+                            title: "Origination",
+                            position: new google.maps.LatLng(
+                                mapinfo.gen.origin[0], mapinfo.gen.origin[1])
+                        });
+
+                        var marker2 = new google.maps.Marker({
+                            map: map,
+                            draggable: true,
+                            title:"Destination",
+                            position: new google.maps.LatLng(
+                                mapinfo.gen.dest[0], mapinfo.gen.dest[1])
+                        });
+
+                        var bounds = new google.maps.LatLngBounds(marker1.getPosition(),
+                            marker2.getPosition());
+                        var path = [marker1.getPosition(), marker2.getPosition()];
+                        $scope.geodesicPoly.setPath(path);
+
+                        map.fitBounds(bounds);
+                        
+                    }
+                    else {
+                        console.log(mapinfo.point);
+                        var titleStr = mapinfo.name +' '+ mapinfo.country +'\n';
+                        titleStr += "Temperature(Deg): "+ mapinfo.temp +'\n';
+                        titleStr += "Humidity: "+ mapinfo.temp +'\n';
+                        titleStr += "Wind: "+ mapinfo.temp +'\n';
+                        var point = new google.maps.Marker({
+                            map: map,
+                            draggable: true,
+                            title: titleStr,
+                            position: new google.maps.LatLng(
+                                mapinfo.point[0], mapinfo.point[1])
+                        });
+
+                    }
+                }
+                return; 
+            }
+            
+            var init = function($scope, $http) {
+                var responsePromise = $http.get("http://localhost:8080/static/airports.json");
+
+                responsePromise.success(function(data, status, headers, config) {
+                    $scope.myData.fromServer = data;
+                });
+                
+                responsePromise.error(function(data, status, headers, config) {
+                var message = "Data:"+data+":status"+status;
+                    alert("AJAX failed!" + message);
+                });
+
+           }
+            init($scope, $http);
+            initializemap($scope)
+        } );
+  </script>
+</body>
+</html>
