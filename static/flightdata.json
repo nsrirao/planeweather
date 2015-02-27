@@ -1,0 +1,178 @@
+[
+  {
+    "gen": {
+      "numintervals": 9, 
+      "origin": [
+        35.877639, 
+        -78.787472
+      ], 
+      "bearing": 286.17078496034986, 
+      "distance": 3853.27989131903, 
+      "dest": [
+        37.618972, 
+        -122.374889
+      ], 
+      "speed": 200.0
+    }
+  }, 
+  {
+    "name": "Morrisville", 
+    "temp": -3.178, 
+    "point": [
+      35.877639, 
+      -78.787472
+    ], 
+    "country": "US", 
+    "longitude": -78.79, 
+    "humidity": 85, 
+    "latitude": 35.88, 
+    "wind": {
+      "speed": 1.47, 
+      "deg": 11.5002
+    }
+  }, 
+  {
+    "name": "Burlingame", 
+    "temp": 14.647, 
+    "point": [
+      37.618972, 
+      -122.374889
+    ], 
+    "country": "US", 
+    "longitude": -122.37, 
+    "humidity": 83, 
+    "latitude": 37.62, 
+    "wind": {
+      "speed": 5.42, 
+      "deg": 299.5
+    }
+  }, 
+  {
+    "name": "Pennington Gap", 
+    "temp": -3.328, 
+    "point": [
+      36.8026180421957, 
+      -83.10361898204697
+    ], 
+    "country": "US", 
+    "longitude": -83.1, 
+    "humidity": 75, 
+    "latitude": 36.8, 
+    "wind": {
+      "speed": 2.82, 
+      "deg": 325.5
+    }
+  }, 
+  {
+    "name": "Sebree", 
+    "temp": -8.578, 
+    "point": [
+      37.568070709260844, 
+      -87.51601507646735
+    ], 
+    "country": "US", 
+    "longitude": -87.52, 
+    "humidity": 77, 
+    "latitude": 37.57, 
+    "wind": {
+      "speed": 5.37, 
+      "deg": 357.5
+    }
+  }, 
+  {
+    "name": "Vienna", 
+    "temp": -10.628, 
+    "point": [
+      38.16617289707244, 
+      -92.00985266899798
+    ], 
+    "country": "US", 
+    "longitude": -92.01, 
+    "humidity": 54, 
+    "latitude": 38.17, 
+    "wind": {
+      "speed": 3.42, 
+      "deg": 359
+    }
+  }, 
+  {
+    "name": "Council Grove", 
+    "temp": -10.953, 
+    "point": [
+      38.59050184055168, 
+      -96.56709856261551
+    ], 
+    "country": "US", 
+    "longitude": -96.57, 
+    "humidity": 54, 
+    "latitude": 38.59, 
+    "wind": {
+      "speed": 3.67, 
+      "deg": 29.5002
+    }
+  }, 
+  {
+    "name": "Oakley", 
+    "temp": -9.603, 
+    "point": [
+      38.83632667315527, 
+      -101.1670357322801
+    ], 
+    "country": "US", 
+    "longitude": -101.17, 
+    "humidity": 85, 
+    "latitude": 38.84, 
+    "wind": {
+      "speed": 1.62, 
+      "deg": 88.5002
+    }
+  }, 
+  {
+    "name": "Colorado", 
+    "temp": -11.353, 
+    "point": [
+      38.90083778400308, 
+      -105.78705326665003
+    ], 
+    "country": "US", 
+    "longitude": -105.79, 
+    "humidity": 80, 
+    "latitude": 38.9, 
+    "wind": {
+      "speed": 2.12, 
+      "deg": 90.5002
+    }
+  }, 
+  {
+    "name": "Hanksville", 
+    "temp": -2.228, 
+    "point": [
+      38.78328928073157, 
+      -110.40362490156286
+    ], 
+    "country": "US", 
+    "longitude": -110.4, 
+    "humidity": 89, 
+    "latitude": 38.78, 
+    "wind": {
+      "speed": 1.37, 
+      "deg": 148
+    }
+  }, 
+  {
+    "name": "Lincoln County", 
+    "temp": 1.297, 
+    "point": [
+      38.48503759944038, 
+      -114.99338257578825
+    ], 
+    "country": "US", 
+    "longitude": -114.99, 
+    "humidity": 37, 
+    "latitude": 38.49, 
+    "wind": {
+      "speed": 4.67, 
+      "deg": 331.5
+    }
+  }
+]

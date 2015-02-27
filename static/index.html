@@ -67,7 +67,7 @@
             
             //When the button is clicked get the weather data from the server
             $scope.myData.doClick = function(item, event) {
-                var responsePromise = $http.get("http://localhost:8080/static/flightdata.json");
+                var responsePromise = $http.get("/static/flightdata.json");
                 responsePromise.success(function(data, status, headers, config) {
                     $scope.myData.flightpath = data;
                     updatemap($scope);
@@ -154,7 +154,7 @@
             }
             
             var init = function($scope, $http) {
-                var responsePromise = $http.get("http://localhost:8080/static/airports.json");
+                var responsePromise = $http.get("/static/airports.json");
 
                 responsePromise.success(function(data, status, headers, config) {
                     $scope.myData.fromServer = data;
