@@ -34,7 +34,7 @@ class flightdata:
         
         if cachekey in flightpaths:
             print "Cache Hit!"
-            return json.dumps(flightpaths[cachekey], indent=2).replace('\'','"')
+            return json.dumps(flightpaths[cachekey], indent=2)#.replace('\'','"')
         
         point1 = getAirportLatLon(sourceAP)   
         point2 = getAirportLatLon(destAP)
@@ -74,7 +74,7 @@ class flightdata:
         
         with open('flightdata.json', 'w+') as fp:
             json.dump(flightpaths[cachekey], fp, indent=2)
-        return json.dumps(flightpaths[cachekey], indent=2).replace('\'','"')
+        return json.dumps(flightpaths[cachekey], indent=2)#.replace('\'','"')
         
         
 def getAirportLatLon(apFAA="RDU"):

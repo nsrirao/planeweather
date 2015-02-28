@@ -40,11 +40,12 @@
         <button ng-click="myData.doClick(item, $event)">Draw Flight Map</button>
        
     
-        <div>
-        {{myForm.sourceAP}} to {{myForm.destAP}}: Departing on {{myForm.departure}}<br>
+        <div id="info">
+        {{myForm.sourceAP}} to {{myForm.destAP}}: Departing on {{myForm.departure}}
         Average speed of {{myForm.speed}} kms/hr. 
         Updated every: {{myForm.interval}} hr
-        <br>
+        ::: Distance: {{myData.distance}}
+        Number of intervals: {{myData.numintervals}}
         </div>
 
     </div>
@@ -67,7 +68,8 @@
             
             //When the button is clicked get the weather data from the server
             $scope.myData.doClick = function(item, event) {
-                var responsePromise = $http.get("/static/flightdata.json");
+                //var responsePromise = $http.get("/static/flightdata.json");
+                var responsePromise = $http.get("http://localhost:8080/v1/flightdata",{params: $scope.myForm});
                 responsePromise.success(function(data, status, headers, config) {
                     $scope.myData.flightpath = data;
                     updatemap($scope);
@@ -103,6 +105,7 @@
             }
             
             function updatemap($scope) {
+                initializemap($scope);
                 var map = $scope.map;
                 var datalength = $scope.myData.flightpath.length;
                 console.log("Flight data has elements:" + datalength);
@@ -110,6 +113,10 @@
                     var mapinfo = $scope.myData.flightpath[i];
                     if (mapinfo.gen !== undefined) {
                         console.log(mapinfo.gen.numintervals);
+                        $scope.myData.distance = mapinfo.gen.distance;
+                        $scope.myData.bearing = mapinfo.gen.bearing;
+                        $scope.myData.numintervals = mapinfo.gen.numintervals;
+                        
                         var marker1 = new google.maps.Marker({
                             map: map,
                             draggable: true,
@@ -138,8 +145,8 @@
                         console.log(mapinfo.point);
                         var titleStr = mapinfo.name +' '+ mapinfo.country +'\n';
                         titleStr += "Temperature(Deg): "+ mapinfo.temp +'\n';
-                        titleStr += "Humidity: "+ mapinfo.temp +'\n';
-                        titleStr += "Wind: "+ mapinfo.temp +'\n';
+                        titleStr += "Humidity: "+ mapinfo.humidity +'\n';
+                        titleStr += "Wind: "+ mapinfo.wind.speed +'\n';
                         var point = new google.maps.Marker({
                             map: map,
                             draggable: true,
